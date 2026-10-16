@@ -7,7 +7,13 @@ Repositório centralizado para gerenciar minhas **Skills**, instruções, prompt
 ```text
 my-ai-skills/
 ├── skills/                  # Skills universais (padrão SKILL.md compartilhado entre agentes)
-│   └── reverse-engineer-anything/
+│   ├── backend-patterns/           # Padrões para Hono, Cloudflare Workers, Express, Supabase e Prisma
+│   ├── coding-standards/           # Boas práticas de TypeScript, JavaScript, React e Node.js
+│   ├── frontend-patterns/          # Padrões para React, Vite, TanStack Query e UI
+│   ├── reverse-engineer-anything/  # Engenharia reversa com REA
+│   ├── security-review/            # Checklist de segurança (Zod, RLS Supabase, Secrets, SQLi/XSS)
+│   ├── tdd-workflow/               # Fluxo de testes unitários, integração e E2E (Vitest/Playwright)
+│   └── verification-loop/          # Verificação pré-commit/PR (build, tsc, lint, testes)
 ├── targets/                 # Customizações, rules ou skills exclusivas por modelo/ecossistema
 │   ├── gemini/              # Específicas para Gemini / Google Antigravity
 │   ├── claude/              # Específicas para Claude / Claude Code
