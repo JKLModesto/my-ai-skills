@@ -1,18 +1,30 @@
 ---
 name: backend-patterns
-description: Backend architecture patterns, API design, database optimization, and server-side best practices for Hono, Cloudflare Workers, Node.js, Express, Supabase, Prisma, and PostgreSQL.
+description: Backend architecture patterns, API design, database optimization, and server-side best practices for Hono, Cloudflare Workers, Node.js, Express, Supabase, Prisma, and PostgreSQL. Use when building or reviewing API routes, workers, and their data access.
+metadata:
+  origin: ECC
 ---
 
 # Backend Development Patterns
 
 Backend architecture patterns and best practices for scalable server-side applications (Hono, Cloudflare Workers, Express, Node.js, Supabase, Prisma/PostgreSQL).
 
+## When to Activate
+
+- Designing REST or GraphQL API endpoints (Hono, Express, Cloudflare Workers)
+- Implementing repository, service, or controller layers
+- Optimizing database queries (N+1, indexing, connection pooling)
+- Adding caching (Redis, KV, in-memory, HTTP cache headers)
+- Setting up background jobs or async processing
+- Structuring error handling and validation for APIs (Zod)
+- Building middleware (auth, logging, rate limiting)
+
 ## API Design Patterns
 
 ### RESTful API Structure
 
 ```typescript
-// ✅ Resource-based URLs
+// PASS: Resource-based URLs
 GET    /api/markets                 # List resources
 GET    /api/markets/:id             # Get single resource
 POST   /api/markets                 # Create resource
@@ -20,7 +32,7 @@ PUT    /api/markets/:id             # Replace resource
 PATCH  /api/markets/:id             # Update resource
 DELETE /api/markets/:id             # Delete resource
 
-// ✅ Query parameters for filtering, sorting, pagination
+// PASS: Query parameters for filtering, sorting, pagination
 GET /api/markets?status=active&sort=volume&limit=20&offset=0
 ```
 
@@ -43,10 +55,9 @@ const createItemSchema = z.object({
   status: z.enum(['active', 'inactive']).default('active'),
 })
 
-// ✅ Typed route with automatic Zod validation and env bindings
+// PASS: Typed route with automatic Zod validation and per-request c.env bindings
 app.post('/api/items', zValidator('json', createItemSchema), async (c) => {
   const payload = c.req.valid('json')
-  // Always read secrets from c.env in Cloudflare Workers (never global process.env)
   const supabase = createClient(c.env.SUPABASE_URL, c.env.SUPABASE_SERVICE_ROLE_KEY)
 
   const { data, error } = await supabase.from('items').insert(payload).select().single()
@@ -119,23 +130,31 @@ class MarketService {
 }
 ```
 
-### Middleware Pattern (Hono & Express)
+### Middleware Pattern
 
 ```typescript
-// ✅ Hono Middleware (Cloudflare Workers / Node)
-import { createMiddleware } from 'hono/factory'
+// Request/response processing pipeline
+export function withAuth(handler: NextApiHandler): NextApiHandler {
+  return async (req, res) => {
+    const token = req.headers.authorization?.replace('Bearer ', '')
 
-export const authMiddleware = createMiddleware(async (c, next) => {
-  const token = c.req.header('Authorization')?.replace('Bearer ', '')
-  if (!token) return c.json({ error: 'Unauthorized' }, 401)
+    if (!token) {
+      return res.status(401).json({ error: 'Unauthorized' })
+    }
 
-  try {
-    const user = await verifyToken(token, c.env)
-    c.set('user', user)
-    await next()
-  } catch {
-    return c.json({ error: 'Invalid token' }, 401)
+    try {
+      const user = await verifyToken(token)
+      req.user = user
+      return handler(req, res)
+    } catch (error) {
+      return res.status(401).json({ error: 'Invalid token' })
+    }
   }
+}
+
+// Usage
+export default withAuth(async (req, res) => {
+  // Handler has access to req.user
 })
 ```
 
@@ -144,7 +163,7 @@ export const authMiddleware = createMiddleware(async (c, next) => {
 ### Query Optimization
 
 ```typescript
-// ✅ GOOD: Select only needed columns
+// PASS: GOOD: Select only needed columns
 const { data } = await supabase
   .from('markets')
   .select('id, name, status, volume')
@@ -152,7 +171,7 @@ const { data } = await supabase
   .order('volume', { ascending: false })
   .limit(10)
 
-// ❌ BAD: Select everything
+// FAIL: BAD: Select everything
 const { data } = await supabase
   .from('markets')
   .select('*')
@@ -161,13 +180,13 @@ const { data } = await supabase
 ### N+1 Query Prevention
 
 ```typescript
-// ❌ BAD: N+1 query problem
+// FAIL: BAD: N+1 query problem
 const markets = await getMarkets()
 for (const market of markets) {
   market.creator = await getUser(market.creator_id)  // N queries
 }
 
-// ✅ GOOD: Batch fetch
+// PASS: GOOD: Batch fetch
 const markets = await getMarkets()
 const creatorIds = markets.map(m => m.creator_id)
 const creators = await getUsers(creatorIds)  // 1 query
@@ -302,7 +321,7 @@ export function errorHandler(error: unknown, req: Request): Response {
     return NextResponse.json({
       success: false,
       error: 'Validation failed',
-      details: error.errors
+      details: error.issues
     }, { status: 400 })
   }
 
@@ -419,70 +438,38 @@ export function hasPermission(user: User, permission: Permission): boolean {
 }
 
 export function requirePermission(permission: Permission) {
-  return async (request: Request) => {
-    const user = await requireAuth(request)
+  return (handler: (request: Request, user: User) => Promise<Response>) => {
+    return async (request: Request) => {
+      const user = await requireAuth(request)
 
-    if (!hasPermission(user, permission)) {
-      throw new ApiError(403, 'Insufficient permissions')
+      if (!hasPermission(user, permission)) {
+        throw new ApiError(403, 'Insufficient permissions')
+      }
+
+      return handler(request, user)
     }
-
-    return user
   }
 }
 
-// Usage
-export const DELETE = requirePermission('delete')(async (request: Request) => {
-  // Handler with permission check
-})
+// Usage - HOF wraps the handler
+export const DELETE = requirePermission('delete')(
+  async (request: Request, user: User) => {
+    // Handler receives authenticated user with verified permission
+    return new Response('Deleted', { status: 200 })
+  }
+)
 ```
 
 ## Rate Limiting
 
-### Simple In-Memory Rate Limiter
+Rate limiting must use a shared store such as Redis, a gateway, or the
+platform's native limiter. Do not use per-process in-memory counters for
+production APIs: they reset on deploy, split across replicas, and fail open in
+serverless or multi-instance environments.
 
-```typescript
-class RateLimiter {
-  private requests = new Map<string, number[]>()
-
-  async checkLimit(
-    identifier: string,
-    maxRequests: number,
-    windowMs: number
-  ): Promise<boolean> {
-    const now = Date.now()
-    const requests = this.requests.get(identifier) || []
-
-    // Remove old requests outside window
-    const recentRequests = requests.filter(time => now - time < windowMs)
-
-    if (recentRequests.length >= maxRequests) {
-      return false  // Rate limit exceeded
-    }
-
-    // Add current request
-    recentRequests.push(now)
-    this.requests.set(identifier, recentRequests)
-
-    return true
-  }
-}
-
-const limiter = new RateLimiter()
-
-export async function GET(request: Request) {
-  const ip = request.headers.get('x-forwarded-for') || 'unknown'
-
-  const allowed = await limiter.checkLimit(ip, 100, 60000)  // 100 req/min
-
-  if (!allowed) {
-    return NextResponse.json({
-      error: 'Rate limit exceeded'
-    }, { status: 429 })
-  }
-
-  // Continue with request
-}
-```
+Keep the backend layer responsible for choosing the integration point and error
+shape; use `api-design` for the HTTP contract and `security-review` for abuse
+case review.
 
 ## Background Jobs & Queues
 
