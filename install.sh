@@ -7,6 +7,7 @@ REPO_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 TARGET_DIRS=(
   "$HOME/.agents/skills"
   "$HOME/.gemini/config/skills"
+  "$HOME/.claude/skills"
 )
 
 echo "🔗 Sincronizando AI Skills a partir de: $REPO_DIR"

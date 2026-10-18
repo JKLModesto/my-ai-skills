@@ -13,12 +13,16 @@ my-ai-skills/
 │   ├── docker-patterns/            # Docker, Docker Compose, segurança de containers e Linux
 │   ├── frontend-patterns/          # Padrões gerais de UI e arquitetura Frontend
 │   ├── hexagonal-architecture/     # Clean Architecture, Ports & Adapters e modularização de arquivos >400 linhas
+│   ├── moli-cdp-server/            # Servidor CDP headless do Moli para automação com Playwright/Puppeteer
+│   ├── moli-webfetch/              # Navegação e extração de páginas dinâmicas (Markdown/JSON/PDF/Screenshot)
+│   ├── moli-websearch/             # Busca na web concorrente multi-engine e busca reversa de imagens
 │   ├── postgres-patterns/          # Otimização de queries PostgreSQL, índices e RLS no Supabase
 │   ├── prisma-patterns/            # Boas práticas e armadilhas críticas do Prisma ORM
 │   ├── python-patterns/            # Python idiomático, PEP 8, tipagem e boas práticas
 │   ├── react-patterns/             # Padrões modernos de React 18/19 (hooks, boundaries, composição)
 │   ├── react-performance/          # 70+ regras de otimização React (Vercel Engineering)
 │   ├── reverse-engineer-anything/  # Engenharia reversa com REA
+│   ├── security-audit/             # Auditoria de segurança e hunting de vulnerabilidades da Cloudflare (6 fases)
 │   ├── security-review/            # Checklist de segurança (Zod, RLS Supabase, Secrets, SQLi/XSS)
 │   ├── tdd-workflow/               # Fluxo de testes unitários, integração e E2E (Vitest/Playwright)
 │   ├── verification-loop/          # Verificação em 6 fases pré-commit/PR (build, tsc, lint, testes)
@@ -29,7 +33,7 @@ my-ai-skills/
 │   └── openai/              # Específicas para GPT / Codex
 ├── templates/               # Templates para criar novas skills rapidamente
 │   └── skill-template/
-└── install.sh               # Script que cria symlinks para ~/.agents/skills e ~/.gemini/config/skills
+└── install.sh               # Script que cria symlinks para ~/.agents/skills, ~/.gemini/config/skills e ~/.claude/skills
 ```
 
 ## 🚀 Como Usar / Instalar em uma Máquina Nova
