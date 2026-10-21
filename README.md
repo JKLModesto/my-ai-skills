@@ -27,6 +27,8 @@ my-ai-skills/
 │   ├── tdd-workflow/               # Fluxo de testes unitários, integração e E2E (Vitest/Playwright)
 │   ├── verification-loop/          # Verificação em 6 fases pré-commit/PR (build, tsc, lint, testes)
 │   └── vite-patterns/              # Configuração avançada de Vite, env vars, proxy e build
+├── scripts/                 # Scripts utilitários de manutenção e atualização
+│   └── update-rea.sh        # Atualiza o pacote REA, arquivos da skill e MCP config
 ├── targets/                 # Customizações, rules ou skills exclusivas por modelo/ecossistema
 │   ├── gemini/              # Específicas para Gemini / Google Antigravity
 │   ├── claude/              # Específicas para Claude / Claude Code
@@ -47,6 +49,18 @@ cd ~/Projetos/my-ai-skills
 ```
 
 Qualquer alteração feita nas skills dentro deste repositório reflete **imediatamente** nos agentes locais (pois estão linkadas via symlink).
+
+## 🔄 Como Atualizar o REA (Reverse Engineer Anything)
+
+Para atualizar o REA (arquivos da skill, links e o servidor MCP do Antigravity/Gemini), execute:
+
+```bash
+# Atualiza automaticamente para a última versão disponível
+./scripts/update-rea.sh
+
+# Ou especifique uma versão exata:
+./scripts/update-rea.sh 6.7.0
+```
 
 ## ➕ Como Criar uma Nova Skill
 
