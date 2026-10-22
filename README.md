@@ -7,6 +7,7 @@ Repositório centralizado para gerenciar minhas **Skills**, instruções, prompt
 ```text
 my-ai-skills/
 ├── skills/                  # Skills universais (padrão SKILL.md compartilhado entre agentes)
+│   ├── asd-ste100/                 # Simplified Technical English (ASD-STE100) para clareza e precisão no output de IA
 │   ├── backend-patterns/           # Padrões para Hono, Cloudflare Workers, Express, Supabase e Prisma
 │   ├── coding-standards/           # Boas práticas de TypeScript, JavaScript, React e Node.js
 │   ├── database-migrations/        # Migrations seguras zero-downtime (PostgreSQL, Prisma, Supabase)
@@ -22,6 +23,7 @@ my-ai-skills/
 │   ├── react-patterns/             # Padrões modernos de React 18/19 (hooks, boundaries, composição)
 │   ├── react-performance/          # 70+ regras de otimização React (Vercel Engineering)
 │   ├── reverse-engineer-anything/  # Engenharia reversa com REA
+│   ├── reverse-engineering-saas/   # Engenharia reversa de produtos SaaS (reconstrução, mapeamento de UX, APIs e dados)
 │   ├── security-audit/             # Auditoria de segurança e hunting de vulnerabilidades da Cloudflare (6 fases)
 │   ├── security-review/            # Checklist de segurança (Zod, RLS Supabase, Secrets, SQLi/XSS)
 │   ├── tdd-workflow/               # Fluxo de testes unitários, integração e E2E (Vitest/Playwright)
