@@ -9,14 +9,21 @@ my-ai-skills/
 ├── skills/                  # Skills universais (padrão SKILL.md compartilhado entre agentes)
 │   ├── asd-ste100/                 # Simplified Technical English (ASD-STE100) para clareza e precisão no output de IA
 │   ├── backend-patterns/           # Padrões para Hono, Cloudflare Workers, Express, Supabase e Prisma
+│   ├── brainstorming/              # Refinamento e especificação antes de codificar (tease specs, opções e design doc)
 │   ├── coding-standards/           # Boas práticas de TypeScript, JavaScript, React e Node.js
 │   ├── database-migrations/        # Migrations seguras zero-downtime (PostgreSQL, Prisma, Supabase)
+│   ├── defuddle/                   # Extração de Markdown limpo a partir de HTML/páginas web
 │   ├── docker-patterns/            # Docker, Docker Compose, segurança de containers e Linux
 │   ├── frontend-patterns/          # Padrões gerais de UI e arquitetura Frontend
 │   ├── hexagonal-architecture/     # Clean Architecture, Ports & Adapters e modularização de arquivos >400 linhas
+│   ├── json-canvas/                # Criação e manipulação de arquivos JSON Canvas (.canvas) do Obsidian
+│   ├── knap/                       # Renderização de Markdown a partir de templates e dados estruturados
 │   ├── moli-cdp-server/            # Servidor CDP headless do Moli para automação com Playwright/Puppeteer
 │   ├── moli-webfetch/              # Navegação e extração de páginas dinâmicas (Markdown/JSON/PDF/Screenshot)
 │   ├── moli-websearch/             # Busca na web concorrente multi-engine e busca reversa de imagens
+│   ├── obsidian-bases/             # Criação e edição de Obsidian Bases (.base) com tabelas, cards e filtros
+│   ├── obsidian-cli/               # Automação e interação com vaults do Obsidian via CLI
+│   ├── obsidian-markdown/          # Obsidian Flavored Markdown (wikilinks, callouts, embeds e propriedades)
 │   ├── postgres-patterns/          # Otimização de queries PostgreSQL, índices e RLS no Supabase
 │   ├── prisma-patterns/            # Boas práticas e armadilhas críticas do Prisma ORM
 │   ├── python-patterns/            # Python idiomático, PEP 8, tipagem e boas práticas
@@ -26,9 +33,13 @@ my-ai-skills/
 │   ├── reverse-engineering-saas/   # Engenharia reversa de produtos SaaS (reconstrução, mapeamento de UX, APIs e dados)
 │   ├── security-audit/             # Auditoria de segurança e hunting de vulnerabilidades da Cloudflare (6 fases)
 │   ├── security-review/            # Checklist de segurança (Zod, RLS Supabase, Secrets, SQLi/XSS)
+│   ├── subagent-driven-development/# Execução de planos com subagentes isolados por tarefa e revisão contínua
+│   ├── systematic-debugging/       # Investigação rigorosa de causa raiz antes de tentar qualquer correção de bug
 │   ├── tdd-workflow/               # Fluxo de testes unitários, integração e E2E (Vitest/Playwright)
 │   ├── verification-loop/          # Verificação em 6 fases pré-commit/PR (build, tsc, lint, testes)
-│   └── vite-patterns/              # Configuração avançada de Vite, env vars, proxy e build
+│   ├── vite-patterns/              # Configuração avançada de Vite, env vars, proxy e build
+│   ├── writing-plans/              # Criação de planos de implementação atômicos, TDD e bite-sized
+│   └── writing-skills/             # Metodologia TDD aplicada à criação e teste de novas skills de IA
 ├── scripts/                 # Scripts utilitários de manutenção e atualização
 │   └── update-rea.sh        # Atualiza o pacote REA, arquivos da skill e MCP config
 ├── targets/                 # Customizações, rules ou skills exclusivas por modelo/ecossistema
